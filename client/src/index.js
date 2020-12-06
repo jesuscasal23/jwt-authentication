@@ -1,6 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+
+
+const App = () => {
+  return (
+    <div className="App">
+      <h1>alive</h1>
+    </div>
+  );
+}
 
 ReactDOM.render(
   <React.StrictMode>
