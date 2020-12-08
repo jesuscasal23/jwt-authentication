@@ -1,9 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // Navigation
 import Navigation from "./components/Navigation";
 // pages
@@ -11,6 +6,7 @@ import Home from "./components/Home";
 import LoginPage from "./components/LoginPage";
 import LogoutPage from "./components/LogoutPage";
 import ProtectedPage from "./components/ProtectedPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -20,32 +16,10 @@ const App = () => {
         <Route exact path="/" component={Home} />
         <Route path="/login" component={LoginPage} />
         <Route path="/logout" component={LogoutPage} />
-        <Route path="/protected" component={ProtectedPage} />
+        <ProtectedRoute path="/protected" component={ProtectedPage} />
       </Switch>
     </Router>
   );
 };
 
 export default App;
-
-// this is not doing anything right now
-const PrivateRoute = ({ children, ...rest }) => {
-  let auth = true;
-  return (
-    <Route
-      {...rest}
-      render={({ location }) =>
-        auth.user ? (
-          children
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: location },
-            }}
-          />
-        )
-      }
-    />
-  );
-};

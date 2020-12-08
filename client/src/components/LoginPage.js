@@ -12,10 +12,15 @@ const LoginPage = (props) => {
   const handleSubmit = (e) => {
     // this is not doing anything
     e.preventDefault();
-    props.sendData({
-      email: data.email,
-      password: data.password,
-    });
+    props.logInAction(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      () => {
+        props.history.push("/protected");
+      }
+    );
   };
 
   const handleChange = (e) => {
@@ -49,16 +54,18 @@ const LoginPage = (props) => {
         <Button variant="contained" color="primary" type="submit">
           Primary
         </Button>
+        {props.authError ? <div>there was an error</div> : null}
       </form>
     </div>
   );
 };
-const mapStateToProps = (globalState) => {
-  return { globalState };
-};
 
 const mapDispatchToProps = {
-  sendData: submitEmailPassword,
+  logInAction: submitEmailPassword,
+};
+
+const mapStateToProps = (state) => {
+  return { authError: state.authError };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

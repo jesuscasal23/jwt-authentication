@@ -1,19 +1,18 @@
-const initialState = {
-  email: "",
-  password: "",
-};
-
-const reducer = (state = initialState, action) => {
+const authReducer = (state = {}, action) => {
   switch (action.type) {
-    case "SUBMIT_EMAIL_PASSWORD":
+    case "AUTH_USER":
       return {
         ...state,
-        email: action.payload.email,
-        password: action.payload.password,
+        authenticated: action.payload,
+      };
+    case "AUTH_ERROR":
+      return {
+        ...state,
+        authError: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default reducer;
+export default authReducer;
