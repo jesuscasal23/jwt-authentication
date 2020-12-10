@@ -6,7 +6,7 @@ const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(cookieParser());
 const port = 8000;
 const accessTokenSecret = "youraccesstokensecret";
@@ -18,11 +18,19 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  // for simplification there is only one user
-  // here you would reach out for the database and check for the corresponding user
-  if (req.body.email === "jesus" && req.body.password === "password") {
+  // check if user exists
+  if (req.body.email === "j" && req.body.password === "p") {
     const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret, {
       expiresIn: "100000",
+    });
+
+    //create refresh token
+    const refreshToken = jwt.sign({ id: 23061997 }, refreshTokenSecret, {
+      expiresIn: "1h",
+    });
+    // send refresh-token in cookie
+    res.cookie("token", refreshToken, {
+      httpOnly: true,
     });
 
     // send jwt-token
@@ -39,11 +47,10 @@ app.get("/protected", (req, res) => {
   const bearerToken = req.headers.authorization;
   const token = bearerToken.split(" ")[1];
 
-  /*  // get the cookie and check its validity
+  // get the cookie and check its validity
   const refreshCookie = req.cookies.token;
   console.log(refreshCookie);
   const refreshToken = jwtDecode(refreshCookie);
-   */
 
   try {
     const decoded = jwt.verify(token, accessTokenSecret);

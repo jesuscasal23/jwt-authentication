@@ -4,6 +4,7 @@ import axios from "axios";
 const submitEmailPassword = (props, callback) => {
   return async function (dispatch) {
     try {
+      axios.defaults.withCredentials = true;
       const response = await axios.post("http://localhost:8000/login", {
         email: props.email,
         password: props.password,
