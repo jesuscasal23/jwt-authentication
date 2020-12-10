@@ -5,7 +5,7 @@ import authReducer from "./reducer";
 
 const store = createStore(
   authReducer,
-  { authenticated: "", authError: "" },
+  { authenticated: "", authError: "", list: [], getError: "" },
   composeWithDevTools(applyMiddleware(reduxThunk))
 );
 

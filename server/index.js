@@ -1,13 +1,17 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+app.use(cookieParser());
 const port = 8000;
 const accessTokenSecret = "youraccesstokensecret";
+const refreshTokenSecret = "refreshToken";
+const expiryDate = new Date(Date.now() + 60 * 60 * 1000);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -17,9 +21,12 @@ app.post("/login", (req, res) => {
   // for simplification there is only one user
   // here you would reach out for the database and check for the corresponding user
   if (req.body.email === "jesus" && req.body.password === "password") {
-    // Generate an access token
-    const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret);
-    res.json({
+    const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret, {
+      expiresIn: "100000",
+    });
+
+    // send jwt-token
+    res.status(200).json({
       accessToken,
     });
   } else {
@@ -27,6 +34,55 @@ app.post("/login", (req, res) => {
   }
 });
 
+app.get("/protected", (req, res) => {
+  // get the jwt and check its validity
+  const bearerToken = req.headers.authorization;
+  const token = bearerToken.split(" ")[1];
+
+  /*  // get the cookie and check its validity
+  const refreshCookie = req.cookies.token;
+  console.log(refreshCookie);
+  const refreshToken = jwtDecode(refreshCookie);
+   */
+
+  try {
+    const decoded = jwt.verify(token, accessTokenSecret);
+    res.status(200).json({
+      list: ["hey", "this", "is", "a", "list"],
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(401).json({
+      error: "no valid token or your token expired",
+    });
+  }
+});
+
+app.get("/cookie", (req, res) => {
+  const refreshToken = jwt.sign({ id: 23061997 }, refreshTokenSecret, {
+    expiresIn: "1h",
+  });
+  // send refresh-token in cookie
+  res.cookie("token", refreshToken, {
+    httpOnly: true,
+  });
+  res.status(200).json({
+    msg: "i sent you a cookie",
+    cookie: refreshToken,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
+});
+
+app.get("/onlyWithCookie", (req, res) => {
+  const rawToken = req.headers.cookie;
+  const token = rawToken.split("=")[1];
+  console.log(token);
+  const decoded = jwt.verify(token, refreshTokenSecret);
+  console.log(decoded);
+  res.status(200).json({
+    msg: "it worked",
+  });
 });

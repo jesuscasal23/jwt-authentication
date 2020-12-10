@@ -10,6 +10,16 @@ const authReducer = (state = {}, action) => {
         ...state,
         authError: action.payload,
       };
+    case "GET_LIST":
+      return {
+        ...state,
+        list: action.payload,
+      };
+    case "GET_ERROR":
+      return {
+        ...state,
+        getError: action.payload,
+      };
     default:
       return state;
   }
