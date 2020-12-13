@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const submitEmailPassword = (props) => {
   const { email, password, history } = props;
   return {
@@ -12,7 +10,17 @@ const submitEmailPassword = (props) => {
   };
 };
 
-const getList = (token, callback) => {
+const getList = (token, history) => {
+  return {
+    type: "FETCH_LIST",
+    payload: {
+      token: token,
+      history: history,
+    },
+  };
+};
+
+/* const getList = (token, callback) => {
   return async function (dispatch) {
     try {
       const response = await axios.get("http://localhost:8000/protected", {
@@ -30,7 +38,7 @@ const getList = (token, callback) => {
       callback();
     }
   };
-};
+}; */
 
 const logOut = () => {
   return {

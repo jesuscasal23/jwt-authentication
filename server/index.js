@@ -49,7 +49,6 @@ app.get("/protected", (req, res) => {
 
   // get the cookie and check its validity
   const refreshCookie = req.cookies.token;
-  console.log(refreshCookie);
 
   try {
     const decoded = jwt.verify(token, accessTokenSecret);

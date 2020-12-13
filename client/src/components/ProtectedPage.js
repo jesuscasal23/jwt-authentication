@@ -5,10 +5,9 @@ import { getList } from "../redux/action";
 const ProtectedPage = (props) => {
   const handleClick = () => {
     const token = props.authenticated;
-    props.getList(token, () => {
-      props.history.push("/login");
-    });
+    props.getList(token, props.history);
   };
+
   return (
     <div>
       <h1>this is a protected ProtectedPage</h1>
