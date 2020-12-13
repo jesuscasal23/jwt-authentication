@@ -18,17 +18,12 @@ const LoginPage = (props) => {
   });
 
   const handleSubmit = (e) => {
-    // this is not doing anything
     e.preventDefault();
-    props.logInAction(
-      {
-        email: data.email,
-        password: data.password,
-      },
-      () => {
-        props.history.push("/protected");
-      }
-    );
+    props.logInAction({
+      email: data.email,
+      password: data.password,
+      history: props.history,
+    });
   };
 
   const handleChange = (e) => {

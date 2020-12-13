@@ -50,7 +50,6 @@ app.get("/protected", (req, res) => {
   // get the cookie and check its validity
   const refreshCookie = req.cookies.token;
   console.log(refreshCookie);
-  const refreshToken = jwtDecode(refreshCookie);
 
   try {
     const decoded = jwt.verify(token, accessTokenSecret);
@@ -65,6 +64,7 @@ app.get("/protected", (req, res) => {
   }
 });
 
+// these routes have to be deleted later on
 app.get("/cookie", (req, res) => {
   const refreshToken = jwt.sign({ id: 23061997 }, refreshTokenSecret, {
     expiresIn: "1h",

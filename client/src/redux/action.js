@@ -1,20 +1,14 @@
 import axios from "axios";
 
-// here is should use redux thunk
-const submitEmailPassword = (props, callback) => {
-  return async function (dispatch) {
-    try {
-      axios.defaults.withCredentials = true;
-      const response = await axios.post("http://localhost:8000/login", {
-        email: props.email,
-        password: props.password,
-      });
-      dispatch({ type: "AUTH_USER", payload: response.data.accessToken });
-      dispatch({ type: "AUTH_ERROR", payload: "" });
-      callback();
-    } catch (e) {
-      dispatch({ type: "AUTH_ERROR", payload: "auth error" });
-    }
+const submitEmailPassword = (props) => {
+  const { email, password, history } = props;
+  return {
+    type: "SUBMIT_EMAIL_PASSWORD",
+    payload: {
+      email: email,
+      password: password,
+      history: history,
+    },
   };
 };
 
