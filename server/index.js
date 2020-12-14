@@ -82,26 +82,12 @@ app.get("/refreshToken", (req, res) => {
 });
 
 // these routes have to be deleted later on
-app.get("/cookie", (req, res) => {
-  const refreshToken = jwt.sign({ id: 23061997 }, refreshTokenSecret, {
-    expiresIn: "1h",
-  });
-  // send refresh-token in cookie
-  res.cookie("token", refreshToken, {
+app.get("/logOut", (req, res) => {
+  res.cookie("token", "", {
     httpOnly: true,
   });
-  res.status(200).json({
-    msg: "i sent you a cookie",
-    cookie: refreshToken,
-  });
-});
-
-app.get("/onlyWithCookie", (req, res) => {
-  const rawToken = req.headers.cookie;
-  const token = rawToken.split("=")[1];
-  const decoded = jwt.verify(token, refreshTokenSecret);
-  res.status(200).json({
-    msg: "it worked",
+  res.status(200).send({
+    msg: "user was logged out",
   });
 });
 

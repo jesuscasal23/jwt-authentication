@@ -9,8 +9,8 @@ export function* watchGetList() {
   yield takeEvery("FETCH_LIST", fetchList);
 }
 
-export function* watchRefreshToken() {
-  yield takeEvery("REFRESH_TOKEN", refreshToken);
+export function* watchLogOut() {
+  yield takeEvery("LOG_OUT", logOut);
 }
 
 function* submitEmailPassword({ payload }) {
@@ -41,6 +41,7 @@ function* fetchList({ payload }) {
       const newToken = yield tryTokenRefresh();
       const response = yield fetchListApitCall(newToken.data.accessToken);
       yield put({ type: "GET_LIST", payload: response.data.list });
+      yield put({ type: "AUTH_USER", payload: newToken.data.accessToken });
     } catch {
       yield put({ type: "GET_ERROR", payload: "no valid Token" });
       payload.history.push("/login");
@@ -67,20 +68,13 @@ const tryTokenRefresh = async () => {
   }
 };
 
-function* refreshToken({ payload }) {
-  console.log("saga being called");
-  try {
-    const token = yield axios.get("http://localhost:8000/refreshToken");
-    yield put({ type: "AUTH_USER", payload: token.data.accessToken });
-    yield put({ type: "AUTH_ERROR", payload: "" });
-  } catch {
-    yield put({ type: "AUTH_ERROR", payload: "auth error" });
-    yield put({ type: "GET_ERROR", payload: "no refresh valid Token" });
-    console.log("refresh token does not work");
-    payload.history.push("/login");
-  }
+function* logOut({ payload }) {
+  console.log("logout saga being called");
+  yield axios.get("http://localhost:8000/logOut");
+  yield put({ type: "AUTH_USER", payload: "" });
+  payload.history.push("/login");
 }
 
 export default function* rootSaga() {
-  yield all([watchSubmitEmailPassword(), watchGetList(), watchRefreshToken()]);
+  yield all([watchSubmitEmailPassword(), watchGetList(), watchLogOut()]);
 }

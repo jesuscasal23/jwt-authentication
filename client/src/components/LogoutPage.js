@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 
 const LogoutPage = (props) => {
   const handleClick = (e) => {
-    props.logOutAction();
+    props.logOutAction(props.history);
   };
   return (
     <Button

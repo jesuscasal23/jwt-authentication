@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { getList, refreshToken } from "../redux/action";
+import { getList } from "../redux/action";
 
 const ProtectedPage = (props) => {
   const [timer, setTimer] = useState(10);
@@ -20,7 +20,6 @@ const ProtectedPage = (props) => {
     <div>
       <h1>this is a protected ProtectedPage</h1>
       <button onClick={() => handleClick()}>get the protected resource</button>
-      <button onClick={() => props.refreshToken()}>refresh Token</button>
       {props.list.map((e) => {
         return <p key={e}>- {e}</p>;
       })}
@@ -35,7 +34,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   getList: getList,
-  refreshToken: refreshToken,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProtectedPage);

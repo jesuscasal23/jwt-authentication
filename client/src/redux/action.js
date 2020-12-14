@@ -20,14 +20,6 @@ const getList = (token, history) => {
   };
 };
 
-const refreshToken = () => {
-  console.log("action beign called");
-  return {
-    type: "REFRESH_TOKEN",
-    payload: "",
-  };
-};
-
 /* const getList = (token, callback) => {
   return async function (dispatch) {
     try {
@@ -48,11 +40,13 @@ const refreshToken = () => {
   };
 }; */
 
-const logOut = () => {
+const logOut = (history) => {
   return {
-    type: "AUTH_USER",
-    payload: "",
+    type: "LOG_OUT",
+    payload: {
+      history: history,
+    },
   };
 };
 
-export { submitEmailPassword, logOut, getList, refreshToken };
+export { submitEmailPassword, logOut, getList };
