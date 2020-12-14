@@ -21,7 +21,7 @@ app.post("/login", (req, res) => {
   // check if user exists
   if (req.body.email === "j" && req.body.password === "p") {
     const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret, {
-      expiresIn: "100000",
+      expiresIn: "10000",
     });
 
     //create refresh token
@@ -44,6 +44,7 @@ app.post("/login", (req, res) => {
 
 app.get("/protected", (req, res) => {
   // get the jwt and check its validity
+  console.log(req.headers);
   const bearerToken = req.headers.authorization;
   const token = bearerToken.split(" ")[1];
 
