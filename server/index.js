@@ -21,7 +21,7 @@ app.post("/login", (req, res) => {
   // check if user exists
   if (req.body.email === "j" && req.body.password === "p") {
     const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret, {
-      expiresIn: "10000",
+      expiresIn: "3000",
     });
 
     //create refresh token
@@ -44,7 +44,6 @@ app.post("/login", (req, res) => {
 
 app.get("/protected", (req, res) => {
   // get the jwt and check its validity
-  console.log(req.headers);
   const bearerToken = req.headers.authorization;
   const token = bearerToken.split(" ")[1];
 
@@ -57,7 +56,6 @@ app.get("/protected", (req, res) => {
       list: ["hey", "this", "is", "a", "list"],
     });
   } catch (e) {
-    console.log(e);
     res.status(401).json({
       error: "no valid token or your token expired",
     });
@@ -68,7 +66,6 @@ app.get("/protected", (req, res) => {
 app.get("/refreshToken", (req, res) => {
   const rawToken = req.headers.cookie;
   const refreshToken = rawToken.split("=")[1];
-  console.log(refreshToken);
   const decoded = jwt.verify(refreshToken, refreshTokenSecret);
   const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret, {
     expiresIn: "10000",
@@ -78,7 +75,9 @@ app.get("/refreshToken", (req, res) => {
       accessToken,
     });
   } else {
-    console.log("no valid cookie");
+    res.status(401).json({
+      error: "no valid token or your token expired",
+    });
   }
 });
 
@@ -97,17 +96,15 @@ app.get("/cookie", (req, res) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
-
 app.get("/onlyWithCookie", (req, res) => {
   const rawToken = req.headers.cookie;
   const token = rawToken.split("=")[1];
-  console.log(token);
   const decoded = jwt.verify(token, refreshTokenSecret);
-  console.log(decoded);
   res.status(200).json({
     msg: "it worked",
   });
+});
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
 });
