@@ -10,9 +10,7 @@ export function* watchGetList() {
 }
 
 function* fetchList({ payload }) {
-  console.log("sage is running");
-  console.log(payload);
-  if (payload) {
+  try {
     const response = yield axios.get("http://localhost:8000/protected", {
       headers: {
         "Content-Type": "application/json",
@@ -20,28 +18,27 @@ function* fetchList({ payload }) {
         Authorization: "Bearer " + payload.token,
       },
     });
-    if (response) {
-      console.log(response.data.list);
-      yield put({ type: "GET_LIST", payload: response.data.list });
-    } else {
-      yield put({ type: "GET_ERROR", payload: "no valid Token" });
-      payload.history.push("/login");
-    }
+    yield put({ type: "GET_LIST", payload: response.data.list });
+  } catch (e) {
+    console.log(e);
+    yield put({ type: "GET_ERROR", payload: "no valid Token" });
+    payload.history.push("/login");
   }
 }
 
 function* submitEmailPassword({ payload }) {
   const { email, password, history } = payload;
   axios.defaults.withCredentials = true;
-  const token = yield axios.post("http://localhost:8000/login", {
-    email: email,
-    password: password,
-  });
-  if (token) {
+
+  try {
+    const token = yield axios.post("http://localhost:8000/login", {
+      email: email,
+      password: password,
+    });
     yield put({ type: "AUTH_USER", payload: token.data.accessToken });
     yield put({ type: "AUTH_ERROR", payload: "" });
     history.push("/protected");
-  } else {
+  } catch (e) {
     yield put({ type: "AUTH_ERROR", payload: "auth error" });
   }
 }
