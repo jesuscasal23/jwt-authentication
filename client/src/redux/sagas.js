@@ -9,6 +9,10 @@ export function* watchGetList() {
   yield takeEvery("FETCH_LIST", fetchList);
 }
 
+export function* watchRefreshToken() {
+  yield takeEvery("REFRESH_TOKEN", refreshToken);
+}
+
 function* fetchList({ payload }) {
   try {
     const response = yield axios.get("http://localhost:8000/protected", {
@@ -40,9 +44,25 @@ function* submitEmailPassword({ payload }) {
     history.push("/protected");
   } catch (e) {
     yield put({ type: "AUTH_ERROR", payload: "auth error" });
+    yield put({ type: "GET_ERROR", payload: "no valid Token" });
+    payload.history.push("/login");
+  }
+}
+
+function* refreshToken({ payload }) {
+  console.log("saga being called");
+  try {
+    const token = yield axios.get("http://localhost:8000/refreshToken");
+    yield put({ type: "AUTH_USER", payload: token.data.accessToken });
+    yield put({ type: "AUTH_ERROR", payload: "" });
+  } catch {
+    yield put({ type: "AUTH_ERROR", payload: "auth error" });
+    yield put({ type: "GET_ERROR", payload: "no refresh valid Token" });
+    console.log("refresh token does not work");
+    payload.history.push("/login");
   }
 }
 
 export default function* rootSaga() {
-  yield all([watchSubmitEmailPassword(), watchGetList()]);
+  yield all([watchSubmitEmailPassword(), watchGetList(), watchRefreshToken()]);
 }

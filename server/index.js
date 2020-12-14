@@ -64,6 +64,24 @@ app.get("/protected", (req, res) => {
   }
 });
 
+// refresh route
+app.get("/refreshToken", (req, res) => {
+  const rawToken = req.headers.cookie;
+  const refreshToken = rawToken.split("=")[1];
+  console.log(refreshToken);
+  const decoded = jwt.verify(refreshToken, refreshTokenSecret);
+  const accessToken = jwt.sign({ email: req.body.email }, accessTokenSecret, {
+    expiresIn: "10000",
+  });
+  if (decoded) {
+    res.status(200).json({
+      accessToken,
+    });
+  } else {
+    console.log("no valid cookie");
+  }
+});
+
 // these routes have to be deleted later on
 app.get("/cookie", (req, res) => {
   const refreshToken = jwt.sign({ id: 23061997 }, refreshTokenSecret, {

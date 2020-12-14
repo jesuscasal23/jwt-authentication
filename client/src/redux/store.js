@@ -11,7 +11,6 @@ const store = createStore(
   { authenticated: "", authError: "", list: [], getError: "" },
   composeWithDevTools(applyMiddleware(sagaMiddleware))
 );
-
 sagaMiddleware.run(rootSaga);
 
 export default store;
